@@ -22,6 +22,9 @@ public class Lobby extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLayout(new BorderLayout());
 
+		// Configure BackgroundPanel
+		panel.setLayout(new BorderLayout());
+
 		// Room List Panel
 		roomPanel.setLayout(new BoxLayout(roomPanel, BoxLayout.Y_AXIS));
 		JScrollPane scrollPane = new JScrollPane(roomPanel);
@@ -45,7 +48,7 @@ public class Lobby extends JFrame {
 		buttonPanel.add(createRoomButton);
 		rightPanel.add(buttonPanel, BorderLayout.SOUTH); // Add button at the bottom of the right panel
 
-		panel.setLayout(new BorderLayout());
+		// Add Right Panel to Background
 		panel.add(rightPanel, BorderLayout.EAST); // Place right panel on the right
 
 		this.setContentPane(panel); // Set the main panel
@@ -110,7 +113,8 @@ public class Lobby extends JFrame {
 
 		public BackgroundPanel() {
 			try {
-				backgroundImage = new ImageIcon("Yootgame/img/backgroundFicture.png").getImage();
+				// Adjust the path to match your project structure
+				backgroundImage = new ImageIcon("src/main/java/Yootgame/img/backgroundFicture.png").getImage();
 			} catch (Exception e) {
 				System.err.println("Background image not found: " + e.getMessage());
 			}
@@ -120,8 +124,38 @@ public class Lobby extends JFrame {
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			if (backgroundImage != null) {
-				g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+				Graphics2D g2d = (Graphics2D) g.create();
+
+				// Enable smooth rendering
+				g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+				// Panel dimensions
+				int panelWidth = getWidth();
+				int panelHeight = getHeight();
+
+				// Image dimensions
+				int imgWidth = backgroundImage.getWidth(this);
+				int imgHeight = backgroundImage.getHeight(this);
+
+				// Calculate scale to fit the panel while maintaining aspect ratio
+				double widthScale = (double) panelWidth / imgWidth;
+				double heightScale = (double) panelHeight / imgHeight;
+				double scale = Math.min(widthScale, heightScale); // Choose the smaller scale to fit both dimensions
+
+				// Calculate new dimensions of the image
+				int newWidth = (int) (imgWidth * scale);
+				int newHeight = (int) (imgHeight * scale);
+
+				// Position the image at the left side
+				int x = 0; // Align to the left
+				int y = (panelHeight - newHeight) / 2; // Center vertically
+
+				// Draw the scaled image
+				g2d.drawImage(backgroundImage, x, y, newWidth, newHeight, this);
+
+				g2d.dispose(); // Dispose of the graphics context
 			}
 		}
 	}
+
 }
