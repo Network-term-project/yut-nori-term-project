@@ -2,12 +2,10 @@ package Yootgame.source.component;
 
 import Yootgame.source.ui.Lobby;
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 
 public class RoomSettingPanel extends JPanel {
     private Lobby parent;
@@ -15,10 +13,29 @@ public class RoomSettingPanel extends JPanel {
     private ButtonGroup timeGroup = new ButtonGroup();
     private JButton createButton = new JButton("방 만들기");
     private JButton cancelButton = new JButton("취소");
+    private Image backgroundImage;
 
     public RoomSettingPanel(Lobby parent) {
         this.parent = parent;
+
+        // Load the background image
+        backgroundImage = new ImageIcon("src/main/java/Yootgame/img/backgroundFicture.png").getImage();
+
         this.setLayout(new BorderLayout()); // Main layout for the panel
+
+        // Custom panel for the left background image
+        JPanel leftImagePanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                if (backgroundImage != null) {
+                    // Draw the image to fill the entire left panel
+                    g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+                }
+            }
+        };
+        leftImagePanel.setOpaque(false);
+        this.add(leftImagePanel, BorderLayout.CENTER); // The background will cover the remaining area
 
         // Right-Aligned Panel
         JPanel rightAlignedPanel = new JPanel();
